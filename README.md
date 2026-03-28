@@ -3,9 +3,10 @@
 
 ### Finance & Expense Tracker
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20App-8b5cf6?style=for-the-badge&logo=netlify)](https://fintrak-app.netlify.app)
-[![Backend](https://img.shields.io/badge/API-Live%20on%20Render-3b82f6?style=for-the-badge&logo=render)](https://fintrak-backend.onrender.com)
-[![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge)](LICENSE)
+## 🚀 Live Demo
+
+🌐 Frontend: https://employee-payrol.netlify.app/
+⚙️ Backend: https://employee-payroll-1msv.onrender.com
 
 *Track every rupee like a pro — beautiful, fast, and completely free.*
 
