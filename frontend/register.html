@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrak — Create Account</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="auth-logo-area">
+        <a href="index.html" style="display:inline-block;">
+          <div class="auth-logo">F</div>
+        </a>
+        <h1 class="auth-title">Create account</h1>
+        <p class="auth-subtitle">Start tracking your finances today — free forever</p>
+      </div>
+
+      <div class="auth-card">
+        <div id="successMsg" class="form-success" style="display:none;">
+          <span>🎉</span> Account created! Redirecting to login…
+        </div>
+        <div id="errorMsg" style="display:none;margin-bottom:16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#ef4444;"></div>
+
+        <div class="auth-form" id="registerForm">
+          <div class="form-group">
+            <label class="floating-label" for="name">Full Name</label>
+            <div class="floating-input-wrap">
+              <input class="auth-input" type="text" id="name" placeholder="Rahul Sharma" autocomplete="name">
+            </div>
+            <div class="error-msg" id="nameError" style="display:none;">⚠ Name must be at least 2 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label class="floating-label" for="email">Email Address</label>
+            <div class="floating-input-wrap">
+              <input class="auth-input" type="email" id="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <div class="error-msg" id="emailError" style="display:none;">⚠ Please enter a valid email</div>
+          </div>
+
+          <div class="form-group">
+            <label class="floating-label" for="password">Password</label>
+            <div class="floating-input-wrap">
+              <input class="auth-input password-input" type="password" id="password" placeholder="Min. 6 characters" autocomplete="new-password">
+              <button class="password-toggle" type="button" onclick="togglePw('password','pwToggle')" id="pwToggle">👁</button>
+            </div>
+            <div class="error-msg" id="passwordError" style="display:none;">⚠ Password must be at least 6 characters</div>
+            <!-- Strength bar -->
+            <div id="strengthBar" style="margin-top:8px;display:none;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:4px;">
+                <span>Password strength</span><span id="strengthLabel">Weak</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" id="strengthFill" style="width:0%;background:var(--accent-red);"></div></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="floating-label" for="confirmPassword">Confirm Password</label>
+            <div class="floating-input-wrap">
+              <input class="auth-input password-input" type="password" id="confirmPassword" placeholder="Repeat password" autocomplete="new-password">
+              <button class="password-toggle" type="button" onclick="togglePw('confirmPassword','pwToggle2')" id="pwToggle2">👁</button>
+            </div>
+            <div class="error-msg" id="confirmError" style="display:none;">⚠ Passwords do not match</div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);">
+            <input type="checkbox" id="terms" style="margin-top:2px;accent-color:var(--accent-purple);">
+            <label for="terms">I agree to the <a href="#" onclick="return false;" style="color:var(--accent-purple);">Terms of Service</a> and <a href="#" onclick="return false;" style="color:var(--accent-purple);">Privacy Policy</a></label>
+          </div>
+
+          <button class="auth-submit btn" type="button" id="registerBtn" onclick="register()">
+            <span id="registerBtnText">Create Account</span>
+            <span id="registerSpinner" style="display:none;"><span class="spinner"></span></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="js/auth.js"></script>
+  <script>
+    // Password strength meter
+    document.getElementById('password').addEventListener('input', function() {
+      const val = this.value;
+      const bar = document.getElementById('strengthBar');
+      const fill = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      if (!val) { bar.style.display = 'none'; return; }
+      bar.style.display = 'block';
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 10) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = [
+        {w:'20%', c:'var(--accent-red)', l:'Very Weak'},
+        {w:'40%', c:'var(--accent-orange)', l:'Weak'},
+        {w:'60%', c:'#eab308', l:'Fair'},
+        {w:'80%', c:'var(--accent-blue)', l:'Strong'},
+        {w:'100%', c:'var(--accent-green)', l:'Very Strong'},
+      ];
+      const lvl = levels[Math.min(score-1, 4)] || levels[0];
+      fill.style.width = lvl.w;
+      fill.style.background = lvl.c;
+      label.textContent = lvl.l;
+      label.style.color = lvl.c;
+    });
+  </script>
+</body>
+</html>
