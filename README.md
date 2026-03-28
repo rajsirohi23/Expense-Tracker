@@ -5,8 +5,8 @@
 
 ## 🚀 Live Demo
 
-🌐 Frontend: https://employee-payrol.netlify.app/
-⚙️ Backend: https://employee-payroll-1msv.onrender.com
+🌐 Frontend: https://fintak.netlify.app
+⚙️ Backend: https://expense-tracker-1-xdp5.onrender.com
 
 *Track every rupee like a pro — beautiful, fast, and completely free.*
 
