@@ -1,5 +1,5 @@
 // ─── CONFIG ─────────────────────────────────────
-const url = "http://localhost:5000";
+const url = "https://expense-tracker-1-xdp5.onrender.com";
 
 // ─── UTILITIES ───────────────────────────────────
 function togglePw(inputId, btnId) {
