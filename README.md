@@ -409,9 +409,6 @@ Built with ❤️ as a full-stack web development project.
 
 <div align="center">
 
-**⭐ Star this repo if you found it helpful!**
-
-[![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/fintrak?style=social)](https://github.com/YOUR_USERNAME/fintrak)
 
 *Made with HTML · CSS · JavaScript · Node.js · MongoDB*
 
