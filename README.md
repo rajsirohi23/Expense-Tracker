@@ -10,10 +10,6 @@
 
 *Track every rupee like a pro — beautiful, fast, and completely free.*
 
----
-
-![FinTrak Dashboard Preview](https://via.placeholder.com/900x480/0d1220/8b5cf6?text=FinTrak+Dashboard+Preview)
-
 </div>
 
 ---
