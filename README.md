@@ -253,12 +253,12 @@ Click **"Demo Account"** on the login page — loads instantly with sample data,
 | Variable | Description | Example |
 |---|---|---|
 | `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/fintrak` |
-| `JWT_SECRET` | Secret key for JWT signing | `my$uper$ecretKey2025` |
+| `JWT_SECRET` | Secret key for JWT signing | `fintrak$uper$ecret2025xyz` |
 | `PORT` | Port for the Express server | `5000` |
 
 For production (MongoDB Atlas):
 ```env
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/fintrak?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://fintrakuser:sagar123@cluster0.x6j0dw4.mongodb.net/fintrak?retryWrites=true&w=majority
 ```
 
 ---
@@ -324,7 +324,7 @@ In both `frontend/js/auth.js` and `frontend/js/dashboard.js`, change:
 const url = "http://localhost:5000";
 
 // Production — replace with your Render URL
-const url = "https://fintrak-backend.onrender.com";
+const url = "https://expense-tracker-1-xdp5.onrender.com";
 ```
 
 ### Update CORS in production
