@@ -14,6 +14,8 @@ function togglePw(inputId, btnId) {
   }
 }
 
+
+
 function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
   if (!container) return;

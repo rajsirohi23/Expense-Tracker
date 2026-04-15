@@ -1248,3 +1248,162 @@ canvas { max-height: 280px; }
   transition:var(--transition);padding:0 2px;
 }
 .member-tag-remove:hover { opacity:1;color:var(--accent-red); }
+
+/* ─── DATE RANGE FILTER ──────────────────────── */
+.date-range-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  transition: var(--transition);
+  backdrop-filter: blur(12px);
+}
+
+.date-range-card.active {
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.08), var(--shadow-sm);
+}
+
+.date-range-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.date-range-active-badge {
+  display: flex;
+  align-items: center;
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 99px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-purple);
+  animation: fadeInUp 0.3s ease;
+}
+
+.date-range-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.date-input-wrap {
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+}
+
+.date-input {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  cursor: pointer;
+}
+.date-input:focus {
+  border-color: var(--accent-purple) !important;
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15) !important;
+}
+
+.date-range-arrow {
+  color: var(--text-muted);
+  padding-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.date-quick-btns {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  padding-bottom: 2px;
+  flex: 2;
+}
+
+.date-quick-btn {
+  padding: 7px 13px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.date-quick-btn:hover {
+  background: rgba(139,92,246,0.12);
+  color: var(--accent-purple);
+  border-color: rgba(139,92,246,0.4);
+  transform: translateY(-1px);
+}
+.date-quick-btn.active {
+  background: rgba(139,92,246,0.18);
+  color: var(--accent-purple);
+  border-color: var(--accent-purple);
+}
+
+/* Summary strip */
+.date-range-summary {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  gap: 0;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  animation: fadeInUp 0.35s ease;
+}
+
+.drs-item {
+  text-align: center;
+  padding: 8px 12px;
+}
+
+.drs-divider {
+  width: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.drs-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 6px;
+}
+
+.drs-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.drs-item.income .drs-val  { color: var(--accent-green); }
+.drs-item.expense .drs-val { color: var(--accent-red); }
+.drs-item.balance .drs-val { color: var(--accent-purple); }
+.drs-item.count .drs-val   { color: var(--accent-blue); }
+
+@media (max-width: 640px) {
+  .date-range-inputs { flex-direction: column; align-items: stretch; }
+  .date-input-wrap   { max-width: 100%; }
+  .date-range-arrow  { display: none; }
+  .date-range-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .drs-divider { display: none; }
+  .drs-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+}

@@ -12,6 +12,12 @@ let selectedCategory = '';
 let selectedType = 'expense';
 let isDemoMode = false;
 
+// Date range state
+let activeDateFrom = null;
+let activeDateTo = null;
+let activeCategory = '';
+let activeQuickBtn = null;
+
 // ─── AUTH CHECK ───────────────────────────────────
 const user = (() => {
   try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
@@ -429,17 +435,183 @@ function filterTransactions(type) {
   document.querySelectorAll('.filter-bar .filter-btn').forEach(b => {
     b.classList.toggle('active', b.textContent.trim().toLowerCase() === type || (type === 'all' && b.textContent.trim() === 'All'));
   });
-  if (type === 'all') filteredTransactions = [...allTransactions];
-  else filteredTransactions = allTransactions.filter(t => t.type === type);
-  renderTransactions();
+  applyAllFilters();
 }
 
 function filterByCategory(cat) {
-  filteredTransactions = cat ? allTransactions.filter(t => t.category === cat) : [...allTransactions];
+  activeCategory = cat;
   document.querySelectorAll('.cat-filter-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.cat === cat);
   });
+  applyAllFilters();
+}
+
+// ─── DATE RANGE FILTER ────────────────────────────
+function applyDateFilter() {
+  const from = document.getElementById('dateFrom').value;
+  const to   = document.getElementById('dateTo').value;
+
+  activeDateFrom = from ? new Date(from + 'T00:00:00') : null;
+  activeDateTo   = to   ? new Date(to   + 'T23:59:59') : null;
+
+  // Clear active quick-btn highlight
+  document.querySelectorAll('.date-quick-btn').forEach(b => b.classList.remove('active'));
+  activeQuickBtn = null;
+
+  applyAllFilters();
+}
+
+function setQuickRange(range) {
+  const now   = new Date();
+  let from, to;
+
+  switch (range) {
+    case 'today':
+      from = toDateStr(now);
+      to   = toDateStr(now);
+      break;
+    case 'week': {
+      const day  = now.getDay();                              // 0=Sun
+      const mon  = new Date(now); mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+      from = toDateStr(mon);
+      to   = toDateStr(now);
+      break;
+    }
+    case 'month':
+      from = toDateStr(new Date(now.getFullYear(), now.getMonth(), 1));
+      to   = toDateStr(now);
+      break;
+    case 'last30': {
+      const d = new Date(now); d.setDate(now.getDate() - 29);
+      from = toDateStr(d);
+      to   = toDateStr(now);
+      break;
+    }
+    case 'last90': {
+      const d = new Date(now); d.setDate(now.getDate() - 89);
+      from = toDateStr(d);
+      to   = toDateStr(now);
+      break;
+    }
+    case 'year':
+      from = toDateStr(new Date(now.getFullYear(), 0, 1));
+      to   = toDateStr(now);
+      break;
+    default:
+      from = '';
+      to   = '';
+  }
+
+  document.getElementById('dateFrom').value = from;
+  document.getElementById('dateTo').value   = to;
+  activeDateFrom = from ? new Date(from + 'T00:00:00') : null;
+  activeDateTo   = to   ? new Date(to   + 'T23:59:59') : null;
+
+  // Highlight active quick btn
+  document.querySelectorAll('.date-quick-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  activeQuickBtn = range;
+
+  applyAllFilters();
+}
+
+function clearDateFilter() {
+  activeDateFrom = null;
+  activeDateTo   = null;
+  activeQuickBtn = null;
+  document.getElementById('dateFrom').value = '';
+  document.getElementById('dateTo').value   = '';
+  document.querySelectorAll('.date-quick-btn').forEach(b => b.classList.remove('active'));
+  applyAllFilters();
+}
+
+// ─── MASTER FILTER — combines date + type + category ─
+function applyAllFilters() {
+  let result = [...allTransactions];
+
+  // 1. Date range
+  if (activeDateFrom || activeDateTo) {
+    result = result.filter(t => {
+      const d = new Date(t.date || t.createdAt || 0);
+      if (activeDateFrom && d < activeDateFrom) return false;
+      if (activeDateTo   && d > activeDateTo)   return false;
+      return true;
+    });
+  }
+
+  // 2. Type (income / expense / all)
+  if (currentFilter !== 'all') {
+    result = result.filter(t => t.type === currentFilter);
+  }
+
+  // 3. Category
+  if (activeCategory) {
+    result = result.filter(t => t.category === activeCategory);
+  }
+
+  filteredTransactions = result;
+
+  // Update UI
+  updateDateRangeUI(result);
+  updatePanelTitle(result);
   renderTransactions();
+}
+
+function updateDateRangeUI(result) {
+  const isActive = activeDateFrom || activeDateTo;
+  const card     = document.getElementById('dateRangeCard');
+  const badge    = document.getElementById('dateRangeBadge');
+  const summary  = document.getElementById('dateRangeSummary');
+  const metaEl   = document.getElementById('txSectionMeta');
+
+  if (card)    card.classList.toggle('active', !!isActive);
+  if (badge)   badge.style.display = isActive ? 'flex' : 'none';
+  if (summary) summary.style.display = isActive ? 'grid' : 'none';
+
+  if (!isActive) {
+    if (metaEl) metaEl.textContent = 'All your income & expense records';
+    return;
+  }
+
+  // Compute summary stats
+  let income = 0, expense = 0;
+  result.forEach(t => {
+    if (t.type === 'income')  income  += t.amount;
+    else                       expense += t.amount;
+  });
+  const net = income - expense;
+
+  const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN');
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('drsIncome',  fmt(income));
+  set('drsExpense', fmt(expense));
+  set('drsBalance', (net >= 0 ? '+' : '-') + fmt(net));
+  set('drsCount',   result.length);
+
+  // Colour net balance
+  const balEl = document.getElementById('drsBalance');
+  if (balEl) balEl.style.color = net >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+
+  // Update section meta
+  if (metaEl) {
+    const fromStr = activeDateFrom ? activeDateFrom.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const toStr   = activeDateTo   ? activeDateTo.toLocaleDateString('en-IN',   {day:'numeric',month:'short',year:'numeric'}) : '—';
+    metaEl.textContent = `Showing ${result.length} transaction${result.length !== 1 ? 's' : ''} from ${fromStr} to ${toStr}`;
+  }
+}
+
+function updatePanelTitle(result) {
+  const titleEl = document.getElementById('panelTitle');
+  if (!titleEl) return;
+  const isFiltered = activeDateFrom || activeDateTo || activeCategory || currentFilter !== 'all';
+  titleEl.textContent = isFiltered
+    ? `${result.length} Transaction${result.length !== 1 ? 's' : ''} Found`
+    : 'All Transactions';
+}
+
+function toDateStr(date) {
+  return date.toISOString().split('T')[0];
 }
 
 // ─── ADD / EDIT TRANSACTION ───────────────────────
